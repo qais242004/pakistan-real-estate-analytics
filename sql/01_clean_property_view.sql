@@ -16,6 +16,7 @@ select
         else price
     end as price,
     city,
+    location,
     province_name,
     purpose,
     -- Area: convert Kanal to Marla (1 Kanal = 20 Marla), keep 1 to 2000 Marla only
