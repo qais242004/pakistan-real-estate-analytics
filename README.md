@@ -1,12 +1,13 @@
 # Pakistan Real Estate Analytics
 
-End-to-end analysis of about 190,000 property listings from Zameen.com, using PostgreSQL (Supabase) and SQL.
+End-to-end analysis of about 190,000 property listings from Zameen.com, using PostgreSQL (Supabase), SQL and Power BI.
 
 ## What this project does
 
 1. Loads raw listings into a `raw` schema (never modified).
 2. Cleans the data in a separate view, `clean.property`.
 3. Answers business questions with SQL.
+4. Shows the results in a Power BI dashboard.
 
 ## Data cleaning decisions
 
@@ -28,12 +29,17 @@ No rows were deleted. Bad values became NULL so other columns stay usable.
 
 All figures are medians, not averages, so a few extreme listings do not distort the result.
 
+## Dashboard preview
+
+![Power BI dashboard](images/dashboard.png)
+
 ## Repository structure
 
 - `sql/01_clean_property_view.sql`: cleaning view
 - `sql/02_rental_yield.sql`: rental yield by city
+- `images/dashboard.png`: dashboard screenshot
 
 ## Next steps
 
-- Power BI dashboard
+- More Power BI charts
 - Price prediction model in Python
