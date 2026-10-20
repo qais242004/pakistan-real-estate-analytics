@@ -1,6 +1,8 @@
 # Pakistan Real Estate Analytics
 
-End-to-end analysis of about 190,000 property listings from Zameen.com, using PostgreSQL (Supabase), SQL, Power BI and Python (scikit-learn).
+End-to-end analysis of about 190,000 property listings from Zameen.com, using PostgreSQL (Supabase), SQL, Power BI and Python (scikit-learn, Streamlit).
+
+**Live app:** [Try the house price estimator](https://pakistan-real-estate-analytics-xkhsdr3ekbrv2t7t8ydad8.streamlit.app/)
 
 ## What this project does
 
@@ -9,6 +11,7 @@ End-to-end analysis of about 190,000 property listings from Zameen.com, using Po
 3. Answers business questions with SQL.
 4. Shows the results in a Power BI dashboard.
 5. Trains a model that estimates the asking price of a house.
+6. Serves the model through a small Streamlit web app.
 
 ## Data cleaning decisions
 
@@ -61,30 +64,34 @@ The typical error is about four times smaller than the baseline. The average err
 - The model uses only five inputs, so it ignores things like house condition, age and exact street.
 - It should be treated as a rough estimate.
 
-## How to run
-
-1. Install the libraries: `pip install pandas scikit-learn sqlalchemy psycopg2-binary python-dotenv matplotlib`
-2. Create a `.env` file with your database address: `DATABASE_URL=...` (this file is never uploaded).
-3. Run `python src/prepare_data.py` to clean the data and save it to `data/houses_clean.csv`.
-4. Run `python src/train_model.py` to train and test the model.
-5. Run `streamlit run src/app.py` to open the app.
 ## Streamlit app
 
 A small web app lets you enter a city, location, area, bedrooms and baths and see the model's estimate of the asking price.
 
-Run it with `streamlit run src/app.py` after training the model.
+**Live app:** [Try the house price estimator](https://pakistan-real-estate-analytics-xkhsdr3ekbrv2t7t8ydad8.streamlit.app/)
+
+The app is hosted on Streamlit Community Cloud. It only needs the saved model and a list of cities and locations. The database password and the full listings data are never uploaded. Free apps go to sleep when nobody uses them, so the first visit may ask you to wake the app up.
+
+## How to run
+
+1. Install the libraries: `pip install -r requirements.txt`
+2. Create a `.env` file with your database address: `DATABASE_URL=...` (this file is never uploaded).
+3. Run `python src/prepare_data.py` to clean the data and save it to `data/houses_clean.csv`.
+4. Run `python src/train_model.py` to train and test the model. It also saves the model and a list of locations in `models/`.
+5. Run `streamlit run src/app.py` to open the app.
 
 ## Repository structure
 
 - `sql/01_clean_property_view.sql`: cleaning view
 - `sql/02_rental_yield.sql`: rental yield by city
 - `src/prepare_data.py`: loads houses from the database, removes outliers, saves a clean CSV
-- `src/train_model.py`: trains and tests the price model
-- `src/load_data.py`, `src/explore.py`, `src/test_connection.py`: helper scripts
-- `images/dashboard.png`: dashboard screenshot
+- `src/train_model.py`: trains and tests the price model, saves the model
 - `src/app.py`: Streamlit app for trying the model
+- `src/load_data.py`, `src/explore.py`, `src/test_connection.py`: helper scripts
+- `models/`: saved model and the list of locations used by the app
 - `requirements.txt`: Python libraries needed to run the project
+- `images/dashboard.png`: dashboard screenshot
+
 ## Next steps
 
-- Streamlit app to try the model with your own house details
 - Track model results with MLflow
