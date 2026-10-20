@@ -54,3 +54,16 @@ for place, price in zip(["F-7", "G-13"], model.predict(samples)):
     df[["city", "location"]].drop_duplicates().sort_values(["city", "location"]).to_csv(
     "models/locations.csv", index=False
 )
+import mlflow
+
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_experiment("house-price-model")
+
+with mlflow.start_run(run_name="hist-gradient-boosting"):
+    mlflow.log_param("model", "HistGradientBoostingRegressor")
+    mlflow.log_param("train_rows", len(X_train))
+    mlflow.log_param("test_rows", len(X_test))
+    mlflow.log_metric("typical_error", median_absolute_error(y_test, predictions))
+    mlflow.log_metric("average_error", mean_absolute_error(y_test, predictions))
+    mlflow.log_metric("baseline_typical_error", median_absolute_error(y_test, baseline))
+    mlflow.log_metric("baseline_average_error", mean_absolute_error(y_test, baseline))

@@ -63,7 +63,13 @@ The typical error is about four times smaller than the baseline. The average err
 - Prices are asking prices, not final sale prices.
 - The model uses only five inputs, so it ignores things like house condition, age and exact street.
 - It should be treated as a rough estimate.
+## Experiment tracking
 
+Each training run is logged with MLflow: the model name, the number of training and test rows, and the errors of both the model and the baseline. This makes it easy to compare runs when the model changes.
+
+![MLflow run](images/mlflow_run.png)
+
+To view the runs on your own computer, run `mlflow ui --backend-store-uri sqlite:///mlflow.db` after training (this needs `pip install mlflow`).
 ## Streamlit app
 
 A small web app lets you enter a city, location, area, bedrooms and baths and see the model's estimate of the asking price.
@@ -91,7 +97,8 @@ The app is hosted on Streamlit Community Cloud. It only needs the saved model an
 - `models/`: saved model and the list of locations used by the app
 - `requirements.txt`: Python libraries needed to run the project
 - `images/dashboard.png`: dashboard screenshot
+- `images/mlflow_run.png`: MLflow run screenshot
+## Possible extensions
 
-## Next steps
-
-- Track model results with MLflow
+- Data quality checks with Great Expectations
+- Scheduled runs with GitHub Actions
