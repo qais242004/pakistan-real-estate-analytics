@@ -1,2 +1,5 @@
 *.pbix
 .env
+data/
+models/
+models/
