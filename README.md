@@ -67,6 +67,12 @@ The typical error is about four times smaller than the baseline. The average err
 2. Create a `.env` file with your database address: `DATABASE_URL=...` (this file is never uploaded).
 3. Run `python src/prepare_data.py` to clean the data and save it to `data/houses_clean.csv`.
 4. Run `python src/train_model.py` to train and test the model.
+5. Run `streamlit run src/app.py` to open the app.
+## Streamlit app
+
+A small web app lets you enter a city, location, area, bedrooms and baths and see the model's estimate of the asking price.
+
+Run it with `streamlit run src/app.py` after training the model.
 
 ## Repository structure
 
@@ -76,7 +82,8 @@ The typical error is about four times smaller than the baseline. The average err
 - `src/train_model.py`: trains and tests the price model
 - `src/load_data.py`, `src/explore.py`, `src/test_connection.py`: helper scripts
 - `images/dashboard.png`: dashboard screenshot
-
+- `src/app.py`: Streamlit app for trying the model
+- `requirements.txt`: Python libraries needed to run the project
 ## Next steps
 
 - Streamlit app to try the model with your own house details
