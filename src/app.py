@@ -14,7 +14,7 @@ def load_model():
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("data/houses_clean.csv")
+    return pd.read_csv("models/locations.csv")
 
 
 model = load_model()

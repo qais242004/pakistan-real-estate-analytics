@@ -51,3 +51,6 @@ samples = pd.DataFrame([
 ])
 for place, price in zip(["F-7", "G-13"], model.predict(samples)):
     print(f"10 Marla house in {place}: {price:,.0f} rupees")
+    df[["city", "location"]].drop_duplicates().sort_values(["city", "location"]).to_csv(
+    "models/locations.csv", index=False
+)
