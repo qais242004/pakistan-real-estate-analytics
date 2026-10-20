@@ -1,6 +1,6 @@
 # Pakistan Real Estate Analytics
 
-End-to-end analysis of about 190,000 property listings from Zameen.com, using PostgreSQL (Supabase), SQL and Power BI.
+End-to-end analysis of about 190,000 property listings from Zameen.com, using PostgreSQL (Supabase), SQL, Power BI and Python (scikit-learn).
 
 ## What this project does
 
@@ -8,6 +8,7 @@ End-to-end analysis of about 190,000 property listings from Zameen.com, using Po
 2. Cleans the data in a separate view, `clean.property`.
 3. Answers business questions with SQL.
 4. Shows the results in a Power BI dashboard.
+5. Trains a model that estimates the asking price of a house.
 
 ## Data cleaning decisions
 
@@ -19,7 +20,7 @@ End-to-end analysis of about 190,000 property listings from Zameen.com, using Po
 | 297 areas below 1 or above 2000 Marla | Set to NULL | Typos and bad entries |
 | 127 prices too low (sale below 5 lakh, rent below 1000) | Set to NULL | Not realistic listings |
 
-No rows were deleted. Bad values became NULL so other columns stay usable.
+No rows were deleted in SQL. Bad values became NULL so other columns stay usable.
 
 ## Findings so far
 
@@ -33,13 +34,50 @@ All figures are medians, not averages, so a few extreme listings do not distort 
 
 ![Power BI dashboard](images/dashboard.png)
 
+## Price prediction model
+
+A gradient boosting model (`HistGradientBoostingRegressor`) estimates the asking price of a house for sale from its city, location, area in Marla, bedrooms and baths.
+
+**Data preparation**
+- Started from 93,722 houses for sale and removed 479 rows that look like typos (area above 100 Marla, or more than 10 bedrooms or baths).
+- Filled missing bedrooms and baths with the median.
+- Kept very expensive houses, because many of them are real.
+
+**Evaluation**
+- 80% of the houses were used for training (74,594) and 20% for testing (18,649). The test houses were never seen during training.
+- The model was compared with a simple baseline that gives every house the same median price.
+
+| Error on unseen houses | Baseline | Model |
+|---|---|---|
+| Typical error (median) | 85 lakh | 20.9 lakh |
+| Average error (mean) | 1.92 crore | 58.5 lakh |
+
+The typical error is about four times smaller than the baseline. The average error is still large because very expensive houses are hard to predict.
+
+**Example:** for the same 10 Marla house with 5 bedrooms and 5 baths, the model estimates about 4.6 crore in F-7 and about 2.9 crore in G-13 (Islamabad).
+
+**Limitations**
+- Prices are asking prices, not final sale prices.
+- The model uses only five inputs, so it ignores things like house condition, age and exact street.
+- It should be treated as a rough estimate.
+
+## How to run
+
+1. Install the libraries: `pip install pandas scikit-learn sqlalchemy psycopg2-binary python-dotenv matplotlib`
+2. Create a `.env` file with your database address: `DATABASE_URL=...` (this file is never uploaded).
+3. Run `python src/prepare_data.py` to clean the data and save it to `data/houses_clean.csv`.
+4. Run `python src/train_model.py` to train and test the model.
+
 ## Repository structure
 
 - `sql/01_clean_property_view.sql`: cleaning view
 - `sql/02_rental_yield.sql`: rental yield by city
+- `src/prepare_data.py`: loads houses from the database, removes outliers, saves a clean CSV
+- `src/train_model.py`: trains and tests the price model
+- `src/load_data.py`, `src/explore.py`, `src/test_connection.py`: helper scripts
 - `images/dashboard.png`: dashboard screenshot
 
 ## Next steps
 
-- More Power BI charts
-- Price prediction model in Python
+- Streamlit app to try the model with your own house details
+- Track model results with MLflow
